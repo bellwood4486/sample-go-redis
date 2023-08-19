@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.com/redis/rueidis"
 	"log"
 )
@@ -13,7 +14,7 @@ func main() {
 		},
 	)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(fmt.Errorf("failed new client: %w", err))
 	}
 	defer client.Close()
 
@@ -28,17 +29,17 @@ func test(client rueidis.Client) error {
 	// PING
 	err = client.Do(ctx, client.B().Ping().Build()).Error()
 	if err != nil {
-		return err
+		return fmt.Errorf("ping failed: %w", err)
 	}
 	// SET
 	err = client.Do(ctx, client.B().Set().Key("key").Value("value").Build()).Error()
 	if err != nil {
-		return err
+		return fmt.Errorf("set failed: %w", err)
 	}
 	// GET
 	v, err := client.Do(ctx, client.B().Get().Key("key").Build()).ToString()
 	if err != nil {
-		return err
+		return fmt.Errorf("get failed: %w", err)
 	}
 	log.Printf("GET key: %s", v)
 
