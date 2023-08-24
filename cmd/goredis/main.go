@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.com/redis/go-redis/v9"
 	"log"
 )
@@ -12,14 +13,15 @@ func main() {
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
+	defer rdb.Close()
 
 	ctx := context.Background()
 	if err := rdb.Ping(ctx).Err(); err != nil {
 		log.Fatal(err)
 	}
-	//val, err := rdb.Get(ctx, "key").Result()
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//fmt.Println(val)
+	val, err := rdb.Get(ctx, "key").Result()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(val)
 }
